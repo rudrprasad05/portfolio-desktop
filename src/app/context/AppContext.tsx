@@ -10,7 +10,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [apps, setApps] = useState<AppWindowProps[]>([
     {
-      id: "1",
+      id: 1,
       name: "Calculator",
       x: 100,
       y: 100,
@@ -18,9 +18,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       width: 300,
       height: 400,
       content: <p>Calculator Content</p>,
+      isOpen: false,
     },
     {
-      id: "2",
+      id: 2,
       name: "Notes",
       x: 200,
       y: 150,
@@ -28,6 +29,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       width: 400,
       height: 300,
       content: <p>Notes Content</p>,
+      isOpen: false,
     },
   ]);
 
@@ -36,29 +38,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     "2": false,
   });
 
-  const toggleApp = (id: string) => {
+  const toggleApp = (id: number) => {
+    apps.map((app) => (app.id === id ? (app.isOpen = !app.isOpen) : app));
+
     setOpenApps((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const isOpen = (id: string) => {
+  const isOpen = (id: number) => {
     let isOpen = false;
     apps.map((a) => (isOpen = a.id === id));
     return isOpen;
   };
 
-  const openApp = (id: string) => {
+  const openApp = (id: number) => {
     setOpenApps((prev) => ({ ...prev, [id]: true }));
   };
 
-  const closeApp = (id: string) => {
+  const closeApp = (id: number) => {
     setOpenApps((prev) => ({ ...prev, [id]: false }));
   };
 
-  const isAppOpen = (id: string): boolean => {
+  const isAppOpen = (id: number): boolean => {
     return openApps[id] || false; // Returns true if app is open, false otherwise
   };
 
-  const fullscreen = (id: string) => {
+  const fullscreen = (id: number) => {
     setApps((prevApps) =>
       prevApps.map((app) =>
         app.id === id
@@ -74,7 +78,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  const minSize = (id: string) => {
+  const minSize = (id: number) => {
     setApps((prevApps) =>
       prevApps.map((app) =>
         app.id === id
@@ -90,7 +94,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  const getAppInfo = (id: string): AppWindowProps | undefined => {
+  const getAppInfo = (id: number): AppWindowProps | undefined => {
     return apps.find((app) => app.id === id);
   };
 
@@ -99,11 +103,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     let app2 = getAppInfo(app?.id);
   };
 
+  const updateAppPosition = (id: number, x: number, y: number) => {
+    setApps((prevApps) =>
+      prevApps.map((app) => (app.id === id ? { ...app, x, y } : app))
+    );
+  };
+
   return (
     <AppContext.Provider
       value={{
         apps,
         setApps,
+        updateAppPosition,
         openApps,
         toggleApp,
         isOpen,

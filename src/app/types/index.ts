@@ -1,5 +1,5 @@
 export interface AppWindowProps {
-  id: string; // unique identifier
+  id: number; // unique identifier
   name: string;
   icon: string | "default-application-icon.png";
   x: number; // x-coordinate for initial position
@@ -7,12 +7,15 @@ export interface AppWindowProps {
   width: number;
   height: number;
   content: React.ReactNode;
+  isOpen: boolean;
 }
 
 export interface AppIconProps {
   name: string;
+  isOpen: boolean;
   icon: string; // URL or path to the icon image
   onOpen: () => void;
+  showName: boolean;
 }
 
 export const DRAGGABLE = {
@@ -29,14 +32,15 @@ export interface DragItem {
 
 export interface AppContextProps {
   apps: AppWindowProps[];
+  updateAppPosition: (id: number, x: number, y: number) => void;
   setApps: (a: any) => void;
   openApps: { [key: string]: boolean };
-  toggleApp: (id: string) => void;
-  isOpen: (id: string) => boolean;
-  fullscreen: (id: string) => void;
-  minSize: (id: string) => void;
-  openApp: (id: string) => void;
-  closeApp: (id: string) => void;
-  isAppOpen: (id: string) => boolean;
-  getAppInfo: (id: string) => AppWindowProps | undefined;
+  toggleApp: (id: number) => void;
+  isOpen: (id: number) => boolean;
+  fullscreen: (id: number) => void;
+  minSize: (id: number) => void;
+  openApp: (id: number) => void;
+  closeApp: (id: number) => void;
+  isAppOpen: (id: number) => boolean;
+  getAppInfo: (id: number) => AppWindowProps | undefined;
 }

@@ -8,7 +8,7 @@ const MenuBar = () => {
   const { apps, toggleApp, setApps, updateAppPosition } = useAppContext();
   return (
     <nav className="absolute w-[100vw] bottom-4 ">
-      <div className="w-4/5 mx-auto rounded-3xl glass flex gap-4 items-center px-3 pt-3 pb-2">
+      <div className="max-w-[70vw] mx-auto rounded-3xl glass flex gap-4 items-center px-3 pt-3 pb-2">
         {apps.map((app) => (
           <AppIcon
             isOpen={app.isOpen}

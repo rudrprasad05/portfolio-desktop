@@ -32,6 +32,7 @@ export interface DragItem {
 
 export interface AppContextProps {
   apps: AppWindowProps[];
+  openAppsStack: DoublyLinkedList<AppWindowProps>;
   handleWindowClick: (id: number) => void;
   focusApp: AppWindowProps | null;
   updateAppPosition: (id: number, x: number, y: number) => void;

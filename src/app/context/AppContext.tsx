@@ -6,40 +6,43 @@ import Stack from "@/app/types/Stack";
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
+const appsData = [
+  {
+    id: 1,
+    name: "Calculator",
+    x: 100,
+    y: 100,
+    icon: "default-application-icon.png",
+    width: 300,
+    height: 400,
+    content: <p>Calculator Content</p>,
+    isOpen: false,
+  },
+  {
+    id: 2,
+    name: "Notes",
+    x: 200,
+    y: 150,
+    icon: "default-application-icon.png",
+    width: 400,
+    height: 300,
+    content: <p>Notes Content</p>,
+    isOpen: false,
+  },
+];
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const openAppsStack = new Stack<AppWindowProps>();
+  const openAppsStack = new DoublyLinkedList<AppWindowProps>();
+  openAppsStack.append(appsData[0]);
+  openAppsStack.append(appsData[1]);
+
   const [activeDraggingId, setActiveDraggingId] = useState<number | undefined>(
     undefined
   );
-  const [apps, setApps] = useState<AppWindowProps[]>([
-    {
-      id: 1,
-      name: "Calculator",
-      x: 100,
-      y: 100,
-      icon: "default-application-icon.png",
-      width: 300,
-      height: 400,
-      content: <p>Calculator Content</p>,
-      isOpen: false,
-    },
-    {
-      id: 2,
-      name: "Notes",
-      x: 200,
-      y: 150,
-      icon: "default-application-icon.png",
-      width: 400,
-      height: 300,
-      content: <p>Notes Content</p>,
-      isOpen: false,
-    },
-  ]);
-
+  const [apps, setApps] = useState<AppWindowProps[]>(appsData);
   const [focusApp, setFocusApp] = useState<AppWindowProps | null>(null);
-
   const [openApps, setOpenApps] = useState<{ [key: string]: boolean }>({
     "1": false,
     "2": false,
@@ -47,18 +50,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleWindowClick = (id: number) => {
     console.log("first");
-    setFocusApp(getAppInfo(id) || null);
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    if (cApp) {
+      openAppsStack.remove(cApp);
+      openAppsStack.append(cApp);
+      setFocusApp(cApp);
+    } else {
+      setFocusApp(null);
+      return;
+    }
   };
 
   const toggleApp = (id: number) => {
-    apps.map((app) => (app.id === id ? (app.isOpen = !app.isOpen) : app));
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    if (!cApp) {
+      setFocusApp(null);
+      return;
+    }
 
-    let cApp: AppWindowProps | undefined = apps.find(
-      (app) => app.id === id && app.isOpen
-    );
-    if (!cApp) setFocusApp(null);
-    else setFocusApp(cApp);
-    setOpenApps((prev) => ({ ...prev, [id]: !prev[id] }));
+    if (cApp.isOpen) {
+      setFocusApp(null);
+      openAppsStack.remove(cApp);
+      cApp.isOpen = false;
+    } else {
+      openAppsStack.append(cApp);
+      setFocusApp(cApp || null);
+    }
   };
 
   const isOpen = (id: number) => {
@@ -130,6 +147,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     <AppContext.Provider
       value={{
         apps,
+        openAppsStack,
         setApps,
         updateAppPosition,
         openApps,

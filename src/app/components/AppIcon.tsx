@@ -13,17 +13,19 @@ const AppIcon: React.FC<AppIconProps> = ({
 }) => (
   <article
     onClick={onOpen}
-    className="flex text-white items-center gap-2  flex-col"
+    className="flex text-white items-center gap-2 h-min cursor-pointer  flex-col"
   >
     <img src={icon} alt={`${name} icon`} width={50} height={50} />
 
-    <div
-      content=""
-      className={clsx(
-        "rounded-full w-1 h-1 bg-slate-50",
-        isOpen ? "opacity-100" : "opacity-0"
-      )}
-    ></div>
+    {!showName && (
+      <div
+        content=""
+        className={clsx(
+          "rounded-full w-1 h-1 bg-slate-50",
+          isOpen ? "opacity-100" : "opacity-0"
+        )}
+      ></div>
+    )}
 
     {showName && <p className="text-xs">{name}</p>}
   </article>

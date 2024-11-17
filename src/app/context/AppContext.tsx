@@ -2,12 +2,17 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { AppContextProps, AppWindowProps } from "../types";
+import Stack from "@/app/types/Stack";
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const openAppsStack = new Stack<AppWindowProps>();
+  const [activeDraggingId, setActiveDraggingId] = useState<number | undefined>(
+    undefined
+  );
   const [apps, setApps] = useState<AppWindowProps[]>([
     {
       id: 1,
@@ -33,14 +38,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   ]);
 
+  const [focusApp, setFocusApp] = useState<AppWindowProps | null>(null);
+
   const [openApps, setOpenApps] = useState<{ [key: string]: boolean }>({
     "1": false,
     "2": false,
   });
 
+  const handleWindowClick = (id: number) => {
+    console.log("first");
+    setFocusApp(getAppInfo(id) || null);
+  };
+
   const toggleApp = (id: number) => {
     apps.map((app) => (app.id === id ? (app.isOpen = !app.isOpen) : app));
 
+    let cApp: AppWindowProps | undefined = apps.find(
+      (app) => app.id === id && app.isOpen
+    );
+    if (!cApp) setFocusApp(null);
+    else setFocusApp(cApp);
     setOpenApps((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
@@ -122,8 +139,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         isAppOpen,
         openApp,
         closeApp,
+        focusApp,
+        handleWindowClick,
         getAppInfo,
         minSize,
+        activeDraggingId,
+        setActiveDraggingId,
       }}
     >
       {children}

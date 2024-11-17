@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { CSSProperties, useCallback, useRef, useState } from "react";
 import { AppWindowProps, DRAGGABLE, DragItem } from "../types";
 import { useAppContext } from "../context/AppContext";
 import { Maximize2, Minus, X } from "lucide-react";
 import update from "immutability-helper";
 import { useDraggable } from "@dnd-kit/core";
 
-const AppWindow: React.FC<AppWindowProps> = ({
+const AppWindowOverlay: React.FC<AppWindowProps> = ({
   id,
   name,
   x,
@@ -23,7 +23,6 @@ const AppWindow: React.FC<AppWindowProps> = ({
     getAppInfo,
     handleWindowClick,
     minSize,
-    activeDraggingId,
   } = useAppContext();
 
   let isOpen = isAppOpen(id);
@@ -34,17 +33,17 @@ const AppWindow: React.FC<AppWindowProps> = ({
 
   if (!thisApp) return;
 
+  const inlineStyles: CSSProperties = {
+    transformOrigin: "50% 50%",
+    width,
+    height,
+  };
+
   return isOpen ? (
     <main
+      style={inlineStyles}
       onClick={() => handleWindowClick(thisApp?.id)}
-      className="absolute transition border bg-appBg border-appBorder text-slate-200 rounded-xl s p-[1px]hadow-sm overflow-auto"
-      style={{
-        top: y,
-        left: x,
-        width,
-        height,
-        opacity: activeDraggingId === id ? "0" : "1",
-      }}
+      className="absolute transition border bg-appBg border-appBorder text-slate-200 rounded-xl s p-[1px] shadow-sm overflow-auto"
     >
       <nav className="flex gap-4 items-center  bg-appMenuBg">
         <div className="group flex items-center gap-2 py-3 pl-5">
@@ -87,4 +86,4 @@ const AppWindow: React.FC<AppWindowProps> = ({
   ) : null;
 };
 
-export default AppWindow;
+export default AppWindowOverlay;

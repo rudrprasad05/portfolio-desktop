@@ -13,10 +13,19 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import MenuBar from "./MenuBar";
+import TopMenuBar from "./TopMenuBar";
+import AppWindowOverlay from "./AppWindowOverlay";
 
 const Desktop: React.FC = () => {
-  const { apps, openApps, toggleApp, setApps, updateAppPosition } =
-    useAppContext();
+  const {
+    apps,
+    openApps,
+    toggleApp,
+    setApps,
+    updateAppPosition,
+    activeDraggingId,
+    setActiveDraggingId,
+  } = useAppContext();
   const [activeApp, setActiveApp] = useState<{
     id: number;
     width: number;
@@ -30,6 +39,7 @@ const Desktop: React.FC = () => {
     const app = apps.find((app) => app.id === id);
     if (app) {
       setActiveApp({ id: app.id, width: app.width, height: app.height }); // Store the app's dimensions
+      setActiveDraggingId(app?.id);
     }
   };
 
@@ -39,11 +49,13 @@ const Desktop: React.FC = () => {
     const app = apps.find((app) => app.id === id);
     if (app) {
       updateAppPosition(id, app.x + delta.x, app.y + delta.y);
+      setActiveDraggingId(undefined);
     }
   };
 
   return (
     <main className="bg-cover bg-no-repeat h-[100vh] w-[100vw] bg-desktop">
+      <TopMenuBar />
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -63,13 +75,10 @@ const Desktop: React.FC = () => {
           {apps.map(
             (app) => openApps[app.id] && <AppWindow key={app.id} {...app} />
           )}
-          <DragOverlay>
+          <DragOverlay adjustScale style={{ transformOrigin: "0 0 " }}>
             {activeApp ? (
-              <AppWindow
+              <AppWindowOverlay
                 {...apps.find((app) => app.id === activeApp.id)!}
-                isOverlay
-                offsetX={-activeApp.width * 2}
-                offsetY={-activeApp.height * 2}
               />
             ) : null}
           </DragOverlay>

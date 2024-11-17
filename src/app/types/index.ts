@@ -32,6 +32,8 @@ export interface DragItem {
 
 export interface AppContextProps {
   apps: AppWindowProps[];
+  handleWindowClick: (id: number) => void;
+  focusApp: AppWindowProps | null;
   updateAppPosition: (id: number, x: number, y: number) => void;
   setApps: (a: any) => void;
   openApps: { [key: string]: boolean };
@@ -43,4 +45,6 @@ export interface AppContextProps {
   closeApp: (id: number) => void;
   isAppOpen: (id: number) => boolean;
   getAppInfo: (id: number) => AppWindowProps | undefined;
+  activeDraggingId: number | undefined;
+  setActiveDraggingId: (id: number | undefined) => void;
 }

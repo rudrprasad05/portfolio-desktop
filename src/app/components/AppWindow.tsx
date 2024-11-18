@@ -20,6 +20,7 @@ const AppWindow: React.FC<AppWindowProps> = ({
     toggleApp,
     fullscreen,
     isAppOpen,
+    handleMinimize,
     getAppInfo,
     handleWindowClick,
     minSize,
@@ -54,7 +55,10 @@ const AppWindow: React.FC<AppWindowProps> = ({
           >
             <X className="transition w-full h-full opacity-0 group-hover:opacity-100 text-appMenuBg" />
           </button>
-          <button className="rounded-full p-[1px] w-3 h-3 bg-yellow-500">
+          <button
+            onClick={() => handleMinimize(id)}
+            className="rounded-full p-[1px] w-3 h-3 bg-yellow-500"
+          >
             <Minus className="transition w-full h-full opacity-0 group-hover:opacity-100 text-appMenuBg" />
           </button>
 

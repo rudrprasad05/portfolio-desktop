@@ -35,6 +35,7 @@ export interface DragItem {
 export interface AppContextProps {
   apps: AppWindowProps[];
   openAppsStack: DoublyLinkedList<AppWindowProps>;
+  minimizedAppStack: DoublyLinkedList<AppWindowProps>;
   handleWindowClick: (id: number) => void;
   focusApp: AppWindowProps | null;
   handleWindowFocus: (
@@ -42,6 +43,7 @@ export interface AppContextProps {
     stack: DoublyLinkedList<AppWindowProps>
   ) => void;
   updateAppPosition: (id: number, x: number, y: number) => void;
+  handleMinimize: (id: number) => void;
   setApps: (a: any) => void;
   toggleApp: (id: number) => void;
   isOpen: (id: number) => boolean;

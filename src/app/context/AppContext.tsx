@@ -38,6 +38,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [openAppsStack, setOpenAppsStack] = useState(
     () => new DoublyLinkedList<AppWindowProps>()
   );
+  const [minimizedAppStack, setMinimizedAppStack] = useState(
+    () => new DoublyLinkedList<AppWindowProps>()
+  );
   const [activeDraggingId, setActiveDraggingId] = useState<number | undefined>(
     undefined
   );
@@ -48,6 +51,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     let cApp: AppWindowProps | undefined = getAppInfo(id);
     const newStack = openAppsStack.toList(openAppsStack);
     handleWindowFocus(cApp, newStack);
+  };
+
+  const handleMinimize = (id: number) => {
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    let nApp: AppWindowProps | undefined = openAppsStack.tail?.prev?.data;
+    const newStack = openAppsStack.toList(openAppsStack);
+    handleWindowFocus(nApp, newStack);
+
+    if (!cApp) return;
+
+    openAppsStack.remove(cApp);
+    minimizedAppStack.append(cApp);
   };
 
   const handleWindowFocus = (
@@ -178,8 +193,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         handleWindowFocus,
         apps,
         openAppsStack,
+        minimizedAppStack,
         setApps,
         updateAppPosition,
+        handleMinimize,
         toggleApp,
         isOpen,
         fullscreen,

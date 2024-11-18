@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { AppContextProps, AppWindowProps } from "../types";
 import Stack from "@/app/types/Stack";
+import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
@@ -34,48 +35,66 @@ const appsData = [
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const openAppsStack = new DoublyLinkedList<AppWindowProps>();
-  openAppsStack.append(appsData[0]);
-  openAppsStack.append(appsData[1]);
-
+  const [openAppsStack, setOpenAppsStack] = useState(
+    () => new DoublyLinkedList<AppWindowProps>()
+  );
   const [activeDraggingId, setActiveDraggingId] = useState<number | undefined>(
     undefined
   );
   const [apps, setApps] = useState<AppWindowProps[]>(appsData);
   const [focusApp, setFocusApp] = useState<AppWindowProps | null>(null);
-  const [openApps, setOpenApps] = useState<{ [key: string]: boolean }>({
-    "1": false,
-    "2": false,
-  });
 
   const handleWindowClick = (id: number) => {
-    console.log("first");
     let cApp: AppWindowProps | undefined = getAppInfo(id);
+    const newStack = openAppsStack.toList(openAppsStack);
+    handleWindowFocus(cApp, newStack);
+  };
+
+  const handleWindowFocus = (
+    cApp: AppWindowProps | undefined,
+    stack: DoublyLinkedList<AppWindowProps>
+  ) => {
     if (cApp) {
-      openAppsStack.remove(cApp);
-      openAppsStack.append(cApp);
-      setFocusApp(cApp);
-    } else {
-      setFocusApp(null);
-      return;
+      console.log("handleWindowFocus if");
+      stack.remove(cApp);
+      stack.append(cApp);
+
+      setFocusApp(cApp || null);
     }
+    console.log("handleWindowFocus");
+
+    setOpenAppsStack(stack);
+    apps.map((a) => console.log("handleWindowFocus", a));
   };
 
   const toggleApp = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
+    console.log(cApp);
+
     if (!cApp) {
       setFocusApp(null);
       return;
     }
 
+    const newStack = openAppsStack.copyListWithoutOneNode(openAppsStack, cApp);
+
+    // Toggle the app's open state
     if (cApp.isOpen) {
+      console.log("Closing app:", cApp.name);
       setFocusApp(null);
-      openAppsStack.remove(cApp);
       cApp.isOpen = false;
     } else {
-      openAppsStack.append(cApp);
-      setFocusApp(cApp || null);
+      console.log("Opening app:", cApp.name);
+      newStack.append(cApp);
+      cApp.isOpen = true;
+      setFocusApp(cApp);
     }
+
+    // Update the openAppsStack state with the modified stack
+    setOpenAppsStack(newStack);
+
+    // Debug: Print the stack after toggling
+    newStack.printBackward(); // Assuming printForward logs the current state of the stack
   };
 
   const isOpen = (id: number) => {
@@ -85,15 +104,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const openApp = (id: number) => {
-    setOpenApps((prev) => ({ ...prev, [id]: true }));
+    // setOpenApps((prev) => ({ ...prev, [id]: true }));
   };
 
   const closeApp = (id: number) => {
-    setOpenApps((prev) => ({ ...prev, [id]: false }));
+    // setOpenApps((prev) => ({ ...prev, [id]: false }));
   };
 
   const isAppOpen = (id: number): boolean => {
-    return openApps[id] || false; // Returns true if app is open, false otherwise
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    if (!cApp) {
+      return false;
+    }
+    let oApp = openAppsStack.find(cApp);
+    if (!oApp) {
+      return false;
+    }
+    return oApp?.data.isOpen;
   };
 
   const fullscreen = (id: number) => {
@@ -138,19 +165,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateAppPosition = (id: number, x: number, y: number) => {
-    setApps((prevApps) =>
-      prevApps.map((app) => (app.id === id ? { ...app, x, y } : app))
-    );
+    let cApp = getAppInfo(id);
+    if (!cApp) return;
+    cApp.x = x;
+    cApp.y = y;
+    handleWindowFocus(cApp, openAppsStack);
   };
 
   return (
     <AppContext.Provider
       value={{
+        handleWindowFocus,
         apps,
         openAppsStack,
         setApps,
         updateAppPosition,
-        openApps,
         toggleApp,
         isOpen,
         fullscreen,

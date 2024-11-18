@@ -1,3 +1,5 @@
+import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
+
 export interface AppWindowProps {
   id: number; // unique identifier
   name: string;
@@ -35,9 +37,12 @@ export interface AppContextProps {
   openAppsStack: DoublyLinkedList<AppWindowProps>;
   handleWindowClick: (id: number) => void;
   focusApp: AppWindowProps | null;
+  handleWindowFocus: (
+    cApp: AppWindowProps | undefined,
+    stack: DoublyLinkedList<AppWindowProps>
+  ) => void;
   updateAppPosition: (id: number, x: number, y: number) => void;
   setApps: (a: any) => void;
-  openApps: { [key: string]: boolean };
   toggleApp: (id: number) => void;
   isOpen: (id: number) => boolean;
   fullscreen: (id: number) => void;

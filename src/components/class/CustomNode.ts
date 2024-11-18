@@ -1,4 +1,4 @@
-class CustomNode<T> {
+export class CustomNode<T> {
   data: T;
   next: CustomNode<T> | null;
   prev: CustomNode<T> | null;

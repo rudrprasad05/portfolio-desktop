@@ -47,10 +47,7 @@ const AppWindowOverlay: React.FC<AppWindowProps> = ({
     >
       <nav className="flex gap-4 items-center  bg-appMenuBg">
         <div className="group flex items-center gap-2 py-3 pl-5">
-          <button
-            onClick={() => toggleApp(id)}
-            className="rounded-full p-[1px] w-3 h-3 bg-destructive hover:none"
-          >
+          <button className="rounded-full p-[1px] w-3 h-3 bg-destructive hover:none">
             <X className="transition w-full h-full opacity-0 group-hover:opacity-100 text-appMenuBg" />
           </button>
           <button className="rounded-full p-[1px] w-3 h-3 bg-yellow-500">

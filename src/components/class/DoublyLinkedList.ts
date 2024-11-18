@@ -1,4 +1,7 @@
-class DoublyLinkedList<T> {
+import { AppWindowProps } from "@/app/types";
+import { CustomNode } from "./CustomNode";
+
+export class DoublyLinkedList<T> {
   head: CustomNode<T> | null;
   tail: CustomNode<T> | null;
   length: number;
@@ -64,6 +67,7 @@ class DoublyLinkedList<T> {
         this.length--;
         return;
       }
+      // @ts-expect-error
       current = current.next;
     }
   }
@@ -81,28 +85,83 @@ class DoublyLinkedList<T> {
   }
 
   // Print the list from head to tail
-  printForward(): void {
+  printForward(debug?: string): void {
     let current = this.head;
     const values = [];
+
+    while (current) {
+      values.push(current.data);
+      console.log(debug, current.data);
+      current = current.next;
+    }
+  }
+
+  printBackward(debug?: string): void {
+    let current = this.tail;
+    const values = [];
+
+    while (current) {
+      values.push(current.data);
+      console.log(debug, current.data);
+      current = current.prev;
+    }
+  }
+
+  getAllForward(): T[] {
+    let current = this.head;
+    const values: T[] = [];
 
     while (current) {
       values.push(current.data);
       current = current.next;
     }
 
-    console.log("Forward:", values.join(" -> "));
+    return values;
   }
 
-  // Print the list from tail to head
-  printBackward(): void {
+  getAllBackward(): T[] {
     let current = this.tail;
-    const values = [];
+    const values: T[] = [];
 
     while (current) {
       values.push(current.data);
       current = current.prev;
     }
 
-    console.log("Backward:", values.join(" -> "));
+    return values;
+  }
+
+  copyListWithoutOneNode(
+    openAppsStack: DoublyLinkedList<AppWindowProps>,
+    cApp: AppWindowProps | undefined
+  ): DoublyLinkedList<AppWindowProps> {
+    const newStack = new DoublyLinkedList<AppWindowProps>();
+    let current = openAppsStack.head;
+
+    // Copy elements from the current stack to the new stack, except for the toggling app
+    while (current) {
+      if (current.data.id !== cApp?.id) {
+        newStack.append(current.data);
+      }
+      current = current.next;
+    }
+
+    return newStack;
+  }
+
+  toList(
+    openAppsStack: DoublyLinkedList<AppWindowProps>
+  ): DoublyLinkedList<AppWindowProps> {
+    const newStack = new DoublyLinkedList<AppWindowProps>();
+    let current = openAppsStack.head;
+
+    // Copy elements from the current stack to the new stack, except for the toggling app
+    while (current) {
+      newStack.append(current.data);
+
+      current = current.next;
+    }
+
+    return newStack;
   }
 }

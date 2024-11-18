@@ -15,15 +15,15 @@ import {
 import MenuBar from "./MenuBar";
 import TopMenuBar from "./TopMenuBar";
 import AppWindowOverlay from "./AppWindowOverlay";
+import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
 
 const Desktop: React.FC = () => {
   const {
     apps,
-    openApps,
+    openAppsStack,
     toggleApp,
-    setApps,
     updateAppPosition,
-    activeDraggingId,
+    handleWindowClick,
     setActiveDraggingId,
   } = useAppContext();
   const [activeApp, setActiveApp] = useState<{
@@ -33,11 +33,15 @@ const Desktop: React.FC = () => {
   } | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor));
+  const [openApps, setOpenApps] = useState(() => openAppsStack);
 
   const handleDragStart = (event: any) => {
     const { id } = event.active;
     const app = apps.find((app) => app.id === id);
     if (app) {
+      console.log("drag start");
+      handleWindowClick(app.id);
+      openApps.printForward();
       setActiveApp({ id: app.id, width: app.width, height: app.height }); // Store the app's dimensions
       setActiveDraggingId(app?.id);
     }
@@ -72,9 +76,10 @@ const Desktop: React.FC = () => {
               onOpen={() => toggleApp(app.id)}
             />
           ))}
-          {apps.map(
-            (app) => openApps[app.id] && <AppWindow key={app.id} {...app} />
-          )}
+
+          {openAppsStack.getAllForward().map((app, index) => (
+            <AppWindow key={app.id} {...app} />
+          ))}
           <DragOverlay adjustScale style={{ transformOrigin: "0 0 " }}>
             {activeApp ? (
               <AppWindowOverlay

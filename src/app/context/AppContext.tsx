@@ -1,9 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { AppContextProps, AppWindowProps } from "../types";
 import Stack from "@/app/types/Stack";
 import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
+import _ from "lodash";
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
@@ -49,26 +50,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleWindowClick = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
     const newStack = openAppsStack.toList(openAppsStack);
+    //TODO handle window click is on the whole app. affectting the way minimize behaves
     handleWindowFocus(cApp, newStack);
   };
 
-  const handleMinimize = (id: number) => {
+  const handleMinimize = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: number
+  ) => {
+    event.stopPropagation();
     let cApp: AppWindowProps | undefined = getAppInfo(id);
     let nApp: AppWindowProps | undefined = openAppsStack.tail?.prev?.data; // used to focus the next app
 
-    const newStack = openAppsStack.toList(openAppsStack);
-    const minStack = minimizedAppStack.toList(minimizedAppStack);
-
-    handleWindowFocus(nApp, newStack);
+    const newStack = _.cloneDeep(openAppsStack);
+    const minStack = _.cloneDeep(minimizedAppStack);
 
     if (!cApp) return;
 
     newStack.remove(cApp);
     minStack.append(cApp);
 
-    setOpenAppsStack(newStack);
+    handleWindowFocus(nApp, newStack);
+
+    newStack.printForward("new stack");
+    openAppsStack.printForward("open stack");
+    minStack.printForward("min stack");
     setMinimizedAppStack(minStack);
   };
+
+  useEffect(() => {
+    openAppsStack.printForward("open stack use effect");
+  }, [openAppsStack]);
 
   const handleWindowFocus = (
     cApp: AppWindowProps | undefined,
@@ -78,7 +90,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       stack.remove(cApp);
       stack.append(cApp);
     }
-
     setOpenAppsStack(stack);
   };
   const openApp = (id: number) => {
@@ -168,7 +179,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!cApp) return;
     cApp.x = x;
     cApp.y = y;
-    handleWindowFocus(cApp, openAppsStack);
+
+    let newStack = _.cloneDeep(openAppsStack);
+    handleWindowFocus(cApp, newStack);
   };
 
   return (

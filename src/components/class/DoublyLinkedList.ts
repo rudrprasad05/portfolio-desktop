@@ -51,7 +51,10 @@ export class DoublyLinkedList<T> {
 
   // Remove a node by value
   remove(data: T): void {
-    if (!this.head) return;
+    if (!this.head) {
+      console.error("err in remove node");
+      return;
+    }
 
     let current = this.head;
 
@@ -96,6 +99,7 @@ export class DoublyLinkedList<T> {
 
     while (current) {
       values.push(current.data);
+      console.log(debug, current.data);
       current = current.next;
     }
   }

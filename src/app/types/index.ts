@@ -42,7 +42,10 @@ export interface AppContextProps {
     stack: DoublyLinkedList<AppWindowProps>
   ) => void;
   updateAppPosition: (id: number, x: number, y: number) => void;
-  handleMinimize: (id: number) => void;
+  handleMinimize: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: number
+  ) => void;
   setApps: (a: any) => void;
   isOpen: (id: number) => boolean;
   fullscreen: (id: number) => void;

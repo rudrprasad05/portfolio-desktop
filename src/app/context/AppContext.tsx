@@ -45,7 +45,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     undefined
   );
   const [apps, setApps] = useState<AppWindowProps[]>(appsData);
-  const [focusApp, setFocusApp] = useState<AppWindowProps | null>(null);
 
   const handleWindowClick = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
@@ -55,14 +54,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleMinimize = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    let nApp: AppWindowProps | undefined = openAppsStack.tail?.prev?.data;
+    let nApp: AppWindowProps | undefined = openAppsStack.tail?.prev?.data; // used to focus the next app
+
     const newStack = openAppsStack.toList(openAppsStack);
+    const minStack = minimizedAppStack.toList(minimizedAppStack);
+
     handleWindowFocus(nApp, newStack);
 
     if (!cApp) return;
 
-    openAppsStack.remove(cApp);
-    minimizedAppStack.append(cApp);
+    newStack.remove(cApp);
+    minStack.append(cApp);
+
+    setOpenAppsStack(newStack);
+    setMinimizedAppStack(minStack);
   };
 
   const handleWindowFocus = (
@@ -70,24 +75,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     stack: DoublyLinkedList<AppWindowProps>
   ) => {
     if (cApp) {
-      console.log("handleWindowFocus if");
       stack.remove(cApp);
       stack.append(cApp);
-
-      setFocusApp(cApp || null);
     }
-    console.log("handleWindowFocus");
 
     setOpenAppsStack(stack);
-    apps.map((a) => console.log("handleWindowFocus", a));
+  };
+  const openApp = (id: number) => {
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    if (!cApp) {
+      return;
+    }
+    const newStack = openAppsStack.toList(openAppsStack);
+    newStack.append(cApp);
+    cApp.isOpen = true;
   };
 
   const toggleApp = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    console.log(cApp);
 
     if (!cApp) {
-      setFocusApp(null);
       return;
     }
 
@@ -95,20 +102,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Toggle the app's open state
     if (cApp.isOpen) {
-      console.log("Closing app:", cApp.name);
-      setFocusApp(null);
       cApp.isOpen = false;
     } else {
-      console.log("Opening app:", cApp.name);
       newStack.append(cApp);
       cApp.isOpen = true;
-      setFocusApp(cApp);
     }
-
-    // Update the openAppsStack state with the modified stack
     setOpenAppsStack(newStack);
-
-    // Debug: Print the stack after toggling
     newStack.printBackward(); // Assuming printForward logs the current state of the stack
   };
 
@@ -116,10 +115,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     let isOpen = false;
     apps.map((a) => (isOpen = a.id === id));
     return isOpen;
-  };
-
-  const openApp = (id: number) => {
-    // setOpenApps((prev) => ({ ...prev, [id]: true }));
   };
 
   const closeApp = (id: number) => {
@@ -203,7 +198,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         isAppOpen,
         openApp,
         closeApp,
-        focusApp,
         handleWindowClick,
         getAppInfo,
         minSize,

@@ -2,6 +2,7 @@
 
 import { AppIconProps } from "@/app/types";
 import clsx from "clsx";
+import Image from "next/image";
 import React from "react";
 
 const AppIcon: React.FC<AppIconProps> = ({
@@ -15,7 +16,15 @@ const AppIcon: React.FC<AppIconProps> = ({
     onClick={onOpen}
     className="flex text-white items-center gap-2 h-min cursor-pointer  flex-col"
   >
-    <img src={icon} alt={`${name} icon`} width={50} height={50} />
+    <div className="w-16 h-16 flex items-center justify-center">
+      <Image
+        className="w-full h-full object-cover"
+        src={"/" + icon}
+        alt={`${name} icon`}
+        width={50}
+        height={50}
+      />
+    </div>
 
     {!showName && (
       <div
@@ -27,7 +36,7 @@ const AppIcon: React.FC<AppIconProps> = ({
       ></div>
     )}
 
-    {showName && <p className="text-xs">{name}</p>}
+    {showName && <p className="text-sm">{name}</p>}
   </article>
 );
 

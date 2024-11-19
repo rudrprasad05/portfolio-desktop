@@ -12,6 +12,11 @@ export class DoublyLinkedList<T> {
     this.length = 0;
   }
 
+  peek(): T | null {
+    if (this.tail) return this.tail.data;
+    else return null;
+  }
+
   // Add a new node to the end of the list
   append(data: T): void {
     const newNode = new CustomNode(data);
@@ -91,7 +96,6 @@ export class DoublyLinkedList<T> {
 
     while (current) {
       values.push(current.data);
-      console.log(debug, current.data);
       current = current.next;
     }
   }
@@ -102,7 +106,6 @@ export class DoublyLinkedList<T> {
 
     while (current) {
       values.push(current.data);
-      console.log(debug, current.data);
       current = current.prev;
     }
   }

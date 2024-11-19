@@ -17,7 +17,8 @@ const AppWindow: React.FC<AppWindowProps> = ({
   content,
 }) => {
   const {
-    toggleApp,
+    openApp,
+    closeApp,
     fullscreen,
     isAppOpen,
     handleMinimize,
@@ -50,7 +51,7 @@ const AppWindow: React.FC<AppWindowProps> = ({
       <nav className="flex gap-4 items-center  bg-appMenuBg">
         <div className="group flex items-center gap-2 py-3 pl-5">
           <button
-            onClick={() => toggleApp(id)}
+            onClick={() => closeApp(id)}
             className="rounded-full p-[1px] w-3 h-3 bg-destructive hover:none"
           >
             <X className="transition w-full h-full opacity-0 group-hover:opacity-100 text-appMenuBg" />

@@ -16,14 +16,8 @@ const AppWindowOverlay: React.FC<AppWindowProps> = ({
   height,
   content,
 }) => {
-  const {
-    toggleApp,
-    fullscreen,
-    isAppOpen,
-    getAppInfo,
-    handleWindowClick,
-    minSize,
-  } = useAppContext();
+  const { fullscreen, isAppOpen, getAppInfo, handleWindowClick, minSize } =
+    useAppContext();
 
   let isOpen = isAppOpen(id);
 

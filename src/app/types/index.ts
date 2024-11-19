@@ -44,7 +44,6 @@ export interface AppContextProps {
   updateAppPosition: (id: number, x: number, y: number) => void;
   handleMinimize: (id: number) => void;
   setApps: (a: any) => void;
-  toggleApp: (id: number) => void;
   isOpen: (id: number) => boolean;
   fullscreen: (id: number) => void;
   minSize: (id: number) => void;

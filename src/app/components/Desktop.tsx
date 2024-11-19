@@ -21,7 +21,7 @@ const Desktop: React.FC = () => {
   const {
     apps,
     openAppsStack,
-    toggleApp,
+    openApp,
     updateAppPosition,
     handleWindowClick,
     setActiveDraggingId,
@@ -72,7 +72,7 @@ const Desktop: React.FC = () => {
               key={app.id}
               name={app.name}
               icon={app.icon}
-              onOpen={() => toggleApp(app.id)}
+              onOpen={() => openApp(app.id)}
             />
           ))}
 

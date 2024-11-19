@@ -83,42 +83,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const openApp = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    if (!cApp) {
+    if (!cApp || cApp.isOpen) {
       return;
     }
     const newStack = openAppsStack.toList(openAppsStack);
     newStack.append(cApp);
     cApp.isOpen = true;
+    setOpenAppsStack(newStack);
   };
 
-  const toggleApp = (id: number) => {
+  const closeApp = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
 
     if (!cApp) {
       return;
     }
-
-    const newStack = openAppsStack.copyListWithoutOneNode(openAppsStack, cApp);
-
-    // Toggle the app's open state
-    if (cApp.isOpen) {
-      cApp.isOpen = false;
-    } else {
-      newStack.append(cApp);
-      cApp.isOpen = true;
-    }
+    const newStack = openAppsStack.toList(openAppsStack);
+    newStack.remove(cApp);
+    cApp.isOpen = false;
     setOpenAppsStack(newStack);
-    newStack.printBackward(); // Assuming printForward logs the current state of the stack
   };
 
   const isOpen = (id: number) => {
     let isOpen = false;
     apps.map((a) => (isOpen = a.id === id));
     return isOpen;
-  };
-
-  const closeApp = (id: number) => {
-    // setOpenApps((prev) => ({ ...prev, [id]: false }));
   };
 
   const isAppOpen = (id: number): boolean => {
@@ -192,7 +181,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setApps,
         updateAppPosition,
         handleMinimize,
-        toggleApp,
         isOpen,
         fullscreen,
         isAppOpen,

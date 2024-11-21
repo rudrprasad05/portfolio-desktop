@@ -20,12 +20,13 @@ import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
 const Desktop: React.FC = () => {
   const {
     apps,
-    openAppsStack,
+    state,
     openApp,
     updateAppPosition,
     handleWindowClick,
     setActiveDraggingId,
   } = useAppContext();
+  const { openAppsStack, minimizedAppStack } = state;
   const [activeApp, setActiveApp] = useState<{
     id: number;
     width: number;

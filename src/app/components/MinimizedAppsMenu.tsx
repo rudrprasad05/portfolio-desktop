@@ -1,12 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import AppIcon from "./AppIcon";
 
 export default function MinimizedAppsMenu() {
-  const { apps, openApp, updateAppPosition, minimizedAppStack } =
-    useAppContext();
+  const { apps, openApp, handleUnMinimize, state } = useAppContext();
+  const { openAppsStack, minimizedAppStack } = state;
+
+  const [minAppStack, setminAppStack] = useState(
+    minimizedAppStack.getAllForward()
+  );
+
+  useEffect(() => {
+    setminAppStack(minimizedAppStack.getAllForward());
+  }, [minimizedAppStack]);
   return (
     <div className="flex items-center gap-4">
       {minimizedAppStack.length > 0 && (
@@ -16,8 +24,8 @@ export default function MinimizedAppsMenu() {
         ></div>
       )}
       <div className="gap-4 flex items-center">
-        {minimizedAppStack.length > 0 &&
-          minimizedAppStack.getAllForward().map((app, index) => (
+        {minAppStack.length > 0 &&
+          minAppStack.map((app, index) => (
             <div key={index}>
               <AppIcon
                 isOpen={app.isOpen}
@@ -26,7 +34,7 @@ export default function MinimizedAppsMenu() {
                 name={app.name}
                 icon={app.icon}
                 // TODO: instead of open app this should deal with minimized stack
-                onOpen={() => openApp(app.id)}
+                onOpen={() => handleUnMinimize(app.id)}
               />
             </div>
           ))}

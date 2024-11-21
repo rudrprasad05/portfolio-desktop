@@ -6,7 +6,7 @@ import AppIcon from "./AppIcon";
 import MinimizedAppsMenu from "./MinimizedAppsMenu";
 
 const MenuBar = () => {
-  const { apps, openApp, openAppsStack, minimizedAppStack } = useAppContext();
+  const { apps, openApp, state, dispatch } = useAppContext();
 
   return (
     <nav className="absolute w-[100vw] bottom-4 ">

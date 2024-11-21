@@ -156,11 +156,9 @@ export class DoublyLinkedList<T> {
     return newStack;
   }
 
-  toList(
-    openAppsStack: DoublyLinkedList<AppWindowProps>
-  ): DoublyLinkedList<AppWindowProps> {
-    const newStack = new DoublyLinkedList<AppWindowProps>();
-    let current = openAppsStack.head;
+  toList(): DoublyLinkedList<T> {
+    const newStack = new DoublyLinkedList<T>();
+    let current = this.head;
 
     // Copy elements from the current stack to the new stack, except for the toggling app
     while (current) {

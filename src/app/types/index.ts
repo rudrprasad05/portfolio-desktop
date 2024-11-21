@@ -1,4 +1,5 @@
 import { DoublyLinkedList } from "@/components/class/DoublyLinkedList";
+import { Dispatch, State } from "../context/AppReducer";
 
 export interface AppWindowProps {
   id: number; // unique identifier
@@ -34,14 +35,17 @@ export interface DragItem {
 
 export interface AppContextProps {
   apps: AppWindowProps[];
-  openAppsStack: DoublyLinkedList<AppWindowProps>;
-  minimizedAppStack: DoublyLinkedList<AppWindowProps>;
+  state: State;
+  dispatch: Dispatch;
+  // openAppsStack: DoublyLinkedList<AppWindowProps>;
+  // minimizedAppStack: DoublyLinkedList<AppWindowProps>;
   handleWindowClick: (id: number) => void;
   handleWindowFocus: (
     cApp: AppWindowProps | undefined,
     stack: DoublyLinkedList<AppWindowProps>
   ) => void;
   updateAppPosition: (id: number, x: number, y: number) => void;
+  handleUnMinimize: (id: number) => void;
   handleMinimize: (
     event: React.MouseEvent<HTMLButtonElement>,
     id: number

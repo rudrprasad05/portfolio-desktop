@@ -111,10 +111,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!cApp) {
       return;
     }
-    // const newStack = openAppsStack.toList();
-    // newStack.remove(cApp);
-    // cApp.isOpen = false;
-    // setOpenAppsStack(newStack);
+    dispatch({ type: "CLOSE_APP", payload: cApp });
   };
 
   const isOpen = (id: number) => {
@@ -128,12 +125,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!cApp) {
       return false;
     }
-    // let oApp = openAppsStack.find(cApp);
-    // if (!oApp) {
-    //   return false;
-    // }
-    // return oApp?.data.isOpen;
-    return true;
+    let oApp = state.openAppsStack.find(cApp);
+    if (!oApp) {
+      return false;
+    }
+    return oApp.data.isOpen;
   };
 
   const fullscreen = (id: number) => {

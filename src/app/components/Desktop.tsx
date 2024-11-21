@@ -65,15 +65,15 @@ const Desktop: React.FC = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-12 p-8 grid-flow-row w-full h-full">
+        <div className="grid md:grid-cols-8 lg:grid-cols-12 p-8 grid-flow-row w-full h-full">
           {apps.map((app) => (
             <AppIcon
+              id={app.id}
               isOpen={false}
               showName
               key={app.id}
               name={app.name}
               icon={app.icon}
-              onOpen={() => openApp(app.id)}
             />
           ))}
 

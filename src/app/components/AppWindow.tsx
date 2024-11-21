@@ -28,15 +28,13 @@ const AppWindow: React.FC<AppWindowProps> = ({
     activeDraggingId,
   } = useAppContext();
 
-  let isOpen = isAppOpen(id);
-
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
   const [isFullScreen, setisFullScreen] = useState(false);
   let thisApp = getAppInfo(id);
 
   if (!thisApp) return;
 
-  return isOpen ? (
+  return thisApp.isOpen ? (
     <main
       onClick={() => handleWindowClick(thisApp?.id)}
       className="absolute transition border bg-appBg border-appBorder text-slate-200 rounded-xl s p-[1px]hadow-sm overflow-auto"

@@ -19,7 +19,7 @@ const MenuBar = () => {
               key={app.id}
               name={app.name}
               icon={app.icon}
-              onOpen={() => openApp(app.id)}
+              id={app.id}
             />
           ))}
         </div>

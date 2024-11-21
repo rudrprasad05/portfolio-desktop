@@ -24,10 +24,22 @@ export default function appReducer(
   openAppsStack: DoublyLinkedList<AppWindowProps>;
   minimizedAppStack: DoublyLinkedList<AppWindowProps>;
 } {
+  const handleOpen = () => {
+    let app = action.payload;
+
+    if (state.openAppsStack.find(app)) return { ...state };
+
+    app.isOpen = true;
+    state.openAppsStack.append(action.payload);
+
+    if (state.minimizedAppStack.length > 0)
+      state.minimizedAppStack.remove(action.payload);
+
+    return { ...state };
+  };
   switch (action.type) {
     case "OPEN_APP":
-      state.openAppsStack.append(action.payload); // Add to open apps stack
-      return { ...state };
+      return handleOpen();
 
     case "CLOSE_APP":
       state.openAppsStack.remove(action.payload); // Remove from open apps stack

@@ -24,8 +24,8 @@ export default function MinimizedAppsMenu() {
         ></div>
       )}
       <div className="gap-4 flex items-center">
-        {minAppStack.length > 0 &&
-          minAppStack.map((app, index) => (
+        {minimizedAppStack.getAllForward().length > 0 &&
+          minimizedAppStack.getAllForward().map((app, index) => (
             <div key={index}>
               <AppIcon
                 isOpen={app.isOpen}
@@ -33,8 +33,7 @@ export default function MinimizedAppsMenu() {
                 key={index}
                 name={app.name}
                 icon={app.icon}
-                // TODO: instead of open app this should deal with minimized stack
-                onOpen={() => handleUnMinimize(app.id)}
+                id={app.id}
               />
             </div>
           ))}

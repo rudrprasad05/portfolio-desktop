@@ -15,9 +15,9 @@ export interface AppWindowProps {
 
 export interface AppIconProps {
   name: string;
+  id: number;
   isOpen: boolean;
   icon: string; // URL or path to the icon image
-  onOpen: () => void;
   showName: boolean;
 }
 

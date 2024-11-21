@@ -45,11 +45,7 @@ const appsData = [
   },
 ];
 
-type Action =
-  | { type: "OPEN_APP"; payload: AppWindowProps }
-  | { type: "CLOSE_APP"; payload: AppWindowProps }
-  | { type: "MINIMIZE_APP"; payload: AppWindowProps }
-  | { type: "RESTORE_APP"; payload: AppWindowProps };
+type ResizeAction = "HORIZONTAL" | "VERTICAL";
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -62,9 +58,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleWindowClick = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    let newStack = state.openAppsStack.toList();
+    if (!cApp) return;
 
-    handleWindowFocus(cApp, newStack);
+    dispatch({ type: "FOCUS_APP", payload: cApp });
   };
 
   const handleUnMinimize = (id: number) => {
@@ -83,17 +79,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!cApp) return;
 
     dispatch({ type: "MINIMIZE_APP", payload: cApp });
-  };
-
-  const handleWindowFocus = (
-    cApp: AppWindowProps | undefined,
-    stack: DoublyLinkedList<AppWindowProps>
-  ) => {
-    if (cApp) {
-      stack.remove(cApp);
-      stack.append(cApp);
-    }
-    // setOpenAppsStack(stack);
   };
 
   const openApp = (id: number) => {
@@ -186,7 +171,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <AppContext.Provider
       value={{
-        handleWindowFocus,
         apps,
         setApps,
         state,

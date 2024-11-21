@@ -5,7 +5,9 @@ type Action =
   | { type: "OPEN_APP"; payload: AppWindowProps }
   | { type: "CLOSE_APP"; payload: AppWindowProps }
   | { type: "MINIMIZE_APP"; payload: AppWindowProps }
-  | { type: "RESTORE_APP"; payload: AppWindowProps };
+  | { type: "RESTORE_APP"; payload: AppWindowProps }
+  | { type: "FOCUS_APP"; payload: AppWindowProps }
+  | { type: "RESIZE_APP"; payload: AppWindowProps };
 
 export type State = {
   openAppsStack: DoublyLinkedList<AppWindowProps>;
@@ -53,6 +55,10 @@ export default function appReducer(
     case "RESTORE_APP":
       state.minimizedAppStack.remove(action.payload); // Remove from minimized stack
       state.openAppsStack.append(action.payload); // Add back to open stack
+      return { ...state };
+    case "FOCUS_APP":
+      state.openAppsStack.remove(action.payload);
+      state.openAppsStack.append(action.payload);
       return { ...state };
 
     default:

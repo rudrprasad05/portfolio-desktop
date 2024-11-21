@@ -40,10 +40,6 @@ export interface AppContextProps {
   // openAppsStack: DoublyLinkedList<AppWindowProps>;
   // minimizedAppStack: DoublyLinkedList<AppWindowProps>;
   handleWindowClick: (id: number) => void;
-  handleWindowFocus: (
-    cApp: AppWindowProps | undefined,
-    stack: DoublyLinkedList<AppWindowProps>
-  ) => void;
   updateAppPosition: (id: number, x: number, y: number) => void;
   handleUnMinimize: (id: number) => void;
   handleMinimize: (

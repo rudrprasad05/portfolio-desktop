@@ -77,7 +77,7 @@ const Desktop: React.FC = () => {
           ))}
 
           {openAppsStack.getAllForward().map((app, index) => {
-            return <AppWindow key={index} {...app} />;
+            return <AppWindow key={app.id} {...app} />;
           })}
           <DragOverlay adjustScale style={{ transformOrigin: "0 0" }}>
             {activeApp ? (

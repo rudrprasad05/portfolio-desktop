@@ -49,8 +49,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleWindowClick = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    const newStack = openAppsStack.toList(openAppsStack);
-    //TODO handle window click is on the whole app. affectting the way minimize behaves
+    let newStack = openAppsStack.toList(openAppsStack);
+
     handleWindowFocus(cApp, newStack);
   };
 
@@ -71,16 +71,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     minStack.append(cApp);
 
     handleWindowFocus(nApp, newStack);
-
-    newStack.printForward("new stack");
-    openAppsStack.printForward("open stack");
-    minStack.printForward("min stack");
     setMinimizedAppStack(minStack);
   };
-
-  useEffect(() => {
-    openAppsStack.printForward("open stack use effect");
-  }, [openAppsStack]);
 
   const handleWindowFocus = (
     cApp: AppWindowProps | undefined,
@@ -92,11 +84,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     setOpenAppsStack(stack);
   };
+
   const openApp = (id: number) => {
     let cApp: AppWindowProps | undefined = getAppInfo(id);
-    if (!cApp || cApp.isOpen) {
+    if (!cApp) {
       return;
     }
+    if (minimizedAppStack.find(cApp)) {
+      let openStack = _.cloneDeep(openAppsStack);
+      let minStack = _.cloneDeep(minimizedAppStack);
+
+      minStack.remove(cApp);
+      openStack.append(cApp);
+
+      minStack.printForward();
+
+      setMinimizedAppStack(minStack);
+      setOpenAppsStack(openStack);
+    }
+
     const newStack = openAppsStack.toList(openAppsStack);
     newStack.append(cApp);
     cApp.isOpen = true;
@@ -180,7 +186,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     cApp.x = x;
     cApp.y = y;
 
-    let newStack = _.cloneDeep(openAppsStack);
+    let newStack = openAppsStack.toList(openAppsStack);
     handleWindowFocus(cApp, newStack);
   };
 

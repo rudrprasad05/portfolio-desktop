@@ -118,19 +118,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const fullscreen = (id: number) => {
-    setApps((prevApps) =>
-      prevApps.map((app) =>
-        app.id === id
-          ? {
-              ...app,
-              x: 0,
-              y: 0,
-              width: window.innerWidth,
-              height: window.innerHeight,
-            }
-          : app
-      )
-    );
+    let cApp: AppWindowProps | undefined = getAppInfo(id);
+    if (!cApp) {
+      return false;
+    }
+    dispatch({ type: "MAXIMIZE_APP", payload: cApp });
   };
 
   const minSize = (id: number) => {

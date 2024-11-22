@@ -22,7 +22,7 @@ const AppWindow: React.FC<AppWindowProps> = ({
     openApp,
     closeApp,
     fullscreen,
-    isAppOpen,
+    dispatch,
     handleMinimize,
     getAppInfo,
     handleWindowClick,
@@ -76,15 +76,27 @@ const AppWindow: React.FC<AppWindowProps> = ({
       width: resizeStart.width + deltaX,
       height: resizeStart.height + deltaY,
     });
+    thisApp.height = resizeStart.height + deltaY;
+    thisApp.width = resizeStart.width + deltaX;
   };
 
   const handleResizeMouseUp = () => {
-    // Remove listeners when dragging ends
-    console.log("mouseup");
-    console.log(size);
-
     window.removeEventListener("mousemove", handleResizeMouseMove);
     window.removeEventListener("mouseup", handleResizeMouseUp);
+  };
+
+  const handleFullScreen = () => {
+    if (!isFullScreen) {
+      setisFullScreen(true);
+      fullscreen(id);
+      dispatch({ type: "MAXIMIZE_APP", payload: thisApp });
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    } else {
+      setisFullScreen(false);
+      dispatch({ type: "SMALLEN_APP", payload: thisApp });
+      setSize({ width: 300, height: 400 });
+      minSize(id);
+    }
   };
 
   return thisApp.isOpen ? (
@@ -99,82 +111,7 @@ const AppWindow: React.FC<AppWindowProps> = ({
         opacity: activeDraggingId === id ? "0" : "1",
       }}
     >
-      {/* top */}
-      <div
-        style={{ width, height: "8px", top: "-5px" }}
-        className="absolute bg-red-600 cursor-ns-resize"
-        content=""
-      ></div>
-      {/* bottom */}
-      <div
-        style={{ width, height: "8px", bottom: "-5px" }}
-        className="absolute bg-red-600 cursor-ns-resize"
-        content=""
-        onMouseDown={(e) => handleResizeMouseDown(e, "VERTICAL")}
-      ></div>
-      {/* left */}
-      <div
-        style={{ height, width: "8px", left: "-5px" }}
-        className="absolute bg-red-600 cursor-ew-resize"
-        content=""
-      ></div>
-      {/* right */}
-      <div
-        style={{ height, width: "8px", right: "-5px" }}
-        className="absolute bg-red-600 cursor-ew-resize"
-        content=""
-        onMouseDown={(e) => handleResizeMouseDown(e, "HORIZONTAL")}
-      ></div>
-
-      {/* top right */}
-      <div
-        style={{
-          height: "8px",
-          width: "8px",
-          right: "-5px",
-          top: "-5px",
-          zIndex: 10,
-        }}
-        className="absolute bg-red-600 cursor-nesw-resize"
-        content=""
-      ></div>
-      {/* top left */}
-      <div
-        style={{
-          height: "8px",
-          width: "8px",
-          left: "-5px",
-          top: "-5px",
-          zIndex: 10,
-        }}
-        className="absolute bg-red-600 cursor-nwse-resize"
-        content=""
-      ></div>
-      {/* bottom left */}
-      <div
-        style={{
-          height: "8px",
-          width: "8px",
-          left: "-5px",
-          bottom: "-5px",
-          zIndex: 10,
-        }}
-        className="absolute bg-red-600 cursor-nesw-resize"
-        content=""
-      ></div>
-      {/* bottom right */}
-      <div
-        style={{
-          height: "8px",
-          width: "8px",
-          right: "-5px",
-          bottom: "-5px",
-          zIndex: 10,
-        }}
-        className="absolute bg-red-600 cursor-nwse-resize"
-        content=""
-      ></div>
-      <nav className="flex gap-4 items-center  bg-appMenuBg">
+      <nav className="flex gap-4 items-center  bg-appMenuBg rounded-t-xl">
         <div className="group flex items-center gap-2 py-3 pl-5">
           <button
             onClick={() => closeApp(id)}
@@ -190,15 +127,7 @@ const AppWindow: React.FC<AppWindowProps> = ({
           </button>
 
           <button
-            onClick={() => {
-              if (!isFullScreen) {
-                setisFullScreen(true);
-                fullscreen(id);
-              } else {
-                setisFullScreen(false);
-                minSize(id);
-              }
-            }}
+            onClick={() => handleFullScreen()}
             className="rounded-full p-[1px] w-3 h-3 bg-green-500"
           >
             <Maximize2 className="transition w-full h-full opacity-0 group-hover:opacity-100 text-appMenuBg" />
@@ -219,3 +148,84 @@ const AppWindow: React.FC<AppWindowProps> = ({
 };
 
 export default AppWindow;
+
+// app resize
+
+// {
+//   {/* top */}
+//   <div
+//   style={{ width, height: "8px", top: "-5px" }}
+//   className="absolute bg-red-600 opacity-0 cursor-ns-resize"
+//   content=""
+// ></div>
+// {/* bottom */}
+// <div
+//   style={{ width, height: "8px", bottom: "-5px" }}
+//   className="absolute bg-red-600 opacity-0 cursor-ns-resize"
+//   content=""
+//   onMouseDown={(e) => handleResizeMouseDown(e, "VERTICAL")}
+// ></div>
+// {/* left */}
+// <div
+//   style={{ height, width: "8px", left: "-5px" }}
+//   className="absolute bg-red-600 opacity-0 cursor-ew-resize"
+//   content=""
+// ></div>
+// {/* right */}
+// <div
+//   style={{ height, width: "8px", right: "-5px" }}
+//   className="absolute bg-red-600 opacity-0 cursor-ew-resize"
+//   content=""
+//   onMouseDown={(e) => handleResizeMouseDown(e, "HORIZONTAL")}
+// ></div>
+
+// {/* top right */}
+// <div
+//   style={{
+//     height: "8px",
+//     width: "8px",
+//     right: "-5px",
+//     top: "-5px",
+//     zIndex: 10,
+//   }}
+//   className="absolute bg-red-600 opacity-0 cursor-nesw-resize"
+//   content=""
+// ></div>
+// {/* top left */}
+// <div
+//   style={{
+//     height: "8px",
+//     width: "8px",
+//     left: "-5px",
+//     top: "-5px",
+//     zIndex: 10,
+//   }}
+//   className="absolute bg-red-600 opacity-0 cursor-nwse-resize"
+//   content=""
+// ></div>
+// {/* bottom left */}
+// <div
+//   style={{
+//     height: "8px",
+//     width: "8px",
+//     left: "-5px",
+//     bottom: "-5px",
+//     zIndex: 10,
+//   }}
+//   className="absolute bg-red-600 opacity-0 cursor-nesw-resize"
+//   content=""
+// ></div>
+// {/* bottom right */}
+// <div
+//   style={{
+//     height: "8px",
+//     width: "8px",
+//     right: "-5px",
+//     bottom: "-5px",
+//     zIndex: 10,
+//   }}
+//   className="absolute bg-red-600 opacity-0 cursor-nwse-resize"
+//   content=""
+// ></div>
+
+// }
